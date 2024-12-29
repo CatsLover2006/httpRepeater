@@ -1,7 +1,7 @@
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include "httplib.h"
 #include <iostream>
-#include <stdlib.h>
+#include <unistd.h>
 
 httplib::Server svr;
 
@@ -13,7 +13,8 @@ int main() {
 		httplib::Client cli_head(domain);
 		cli_head.set_follow_location(true);
 		auto head = cli_head.Head(file);
-		res.set_content_provider(atoll(head->headers.find("Content-Length")->first.c_str()),
+		std::cout << head->content_length_ << std::endl;
+		res.set_content_provider(head->content_length_,
 			head->headers.find("Content-Type")->first,
 			[&, domain, file](size_t offset, size_t length, httplib::DataSink &sink) {
 				httplib::DataSink* toWrite = &sink;
